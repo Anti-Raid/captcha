@@ -12,7 +12,8 @@ homepage = "https://github.com/daniel-e/captcha"
 repository = "https://github.com/daniel-e/captcha"
 
 [dependencies]
-image = { version = "0.25.2", default-features = false, features = ["png"] }
+image = { version = "0.25", default-features = false, features = ["png"] }
+imageproc = { version = "0.25" }
 rand = "0.8.5"
 serde_json = "1.0"
 base64 = "0.13"

@@ -92,6 +92,10 @@ impl Image {
         self.img.save(p)
     }
 
+    pub fn draw_polygon(&mut self, poly: &[imageproc::point::Point<i32>], color: Pixl) {
+        imageproc::drawing::draw_polygon_mut(&mut self.img, poly, Rgb::<u8>(color.rgb));
+    }
+
     pub fn fill_circle(&mut self, x: u32, y: u32, r: u32, p: Pixl) {
         let h = self.height();
         let w = self.width();

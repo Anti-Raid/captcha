@@ -251,7 +251,7 @@ impl<T: rand::Rng + rand::RngCore> RngCaptcha<T> {
     }
 
     /// Crops the CAPTCHA to the given geometry.
-    pub fn extract(&mut self, area: Geometry) -> &mut Self {
+    pub fn extract(&mut self, area: &Geometry) -> &mut Self {
         // TODO rename the method
         // TODO adjust the text area
         let w = area.right - area.left;
@@ -274,8 +274,9 @@ impl<T: rand::Rng + rand::RngCore> RngCaptcha<T> {
         a.right = a.left + w;
         a.top = ((a.bottom + a.top) / 2).saturating_sub(h / 2);
         a.bottom = a.top + h;
-        self.extract(a);
+        self.extract(&a);
         // TODO update text area
+        self.text_area = a;
         // TODO what happens if w or h are too small
         self
     }
@@ -366,7 +367,7 @@ mod tests {
             .add_text_area();
 
         let a = c.text_area();
-        c.extract(a)
+        c.extract(&a)
             .save(Path::new("/tmp/captcha.png"))
             .expect("save failed");
         c.as_png().expect("no png");
