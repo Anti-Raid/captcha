@@ -3,6 +3,8 @@ use rand::{thread_rng, Rng};
 use filters::Filter;
 use images::{Image, Pixl};
 
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Noise {
     prob: f32,
 }
@@ -13,6 +15,7 @@ impl Noise {
     }
 }
 
+#[typetag::serde]
 impl Filter for Noise {
     fn apply(&self, i: &mut Image) {
         let mut rng = thread_rng();

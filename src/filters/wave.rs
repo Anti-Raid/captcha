@@ -47,6 +47,7 @@ impl Wave {
 }
 
 // TODO randomize offset
+#[typetag::serde]
 
 impl Filter for Wave {
     fn apply(&self, i: &mut Image) {

@@ -17,21 +17,7 @@ pub use filters::grid::Grid;
 pub use filters::noise::Noise;
 pub use filters::wave::Wave;
 
+#[typetag::serde]
 pub trait Filter {
     fn apply(&self, i: &mut Image);
-}
-
-use std::ops::Deref;
-use std::sync::Arc;
-
-impl<T: Filter> Filter for Box<T> {
-    fn apply(&self, i: &mut Image) {
-        self.deref().apply(i);
-    }
-}
-
-impl<T: Filter> Filter for Arc<T> {
-    fn apply(&self, i: &mut Image) {
-        self.deref().apply(i)
-    }
 }

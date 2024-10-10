@@ -11,6 +11,7 @@ impl ColorInvert {
     }
 }
 
+#[typetag::serde]
 impl Filter for ColorInvert {
     fn apply(&self, i: &mut Image) {
         for y in 0..i.height() {

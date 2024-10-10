@@ -35,6 +35,7 @@ impl Dots {
     }
 }
 
+#[typetag::serde]
 impl Filter for Dots {
     fn apply(&self, i: &mut Image) {
         let mut rng = thread_rng();

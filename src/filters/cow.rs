@@ -75,6 +75,7 @@ impl Cow {
     }
 }
 
+#[typetag::serde]
 impl Filter for Cow {
     fn apply(&self, i: &mut Image) {
         let mut rng = thread_rng();
