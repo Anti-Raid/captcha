@@ -3,11 +3,15 @@ use std::f64::consts;
 use filters::Filter;
 use images::Image;
 
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Direction {
     HORIZONTAL,
     VERTICAL,
 }
 
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Wave {
     f: f64,
     amp: f64,
