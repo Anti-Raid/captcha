@@ -1,5 +1,6 @@
 //! Filters to disturb and transform CAPTCHAs.
 
+mod color_invert;
 mod cow;
 mod dots;
 mod grid;
@@ -9,6 +10,7 @@ mod wave;
 use images::Image;
 
 // reexports
+pub use filters::color_invert::ColorInvert;
 pub use filters::cow::Cow;
 pub use filters::dots::Dots;
 pub use filters::grid::Grid;

@@ -1,6 +1,6 @@
 extern crate captcha;
 
-use captcha::filters::{Cow, Grid, Noise, Wave};
+use captcha::filters::{ColorInvert, Cow, Grid, Noise, Wave};
 use captcha::{Captcha, Geometry};
 
 use std::path::Path;
@@ -11,6 +11,7 @@ fn main() {
         .apply_filter(Noise::new(0.05))
         .apply_filter(Wave::new(4.0, 20.0))
         .apply_filter(Grid::new(10, 30))
+        .apply_filter(ColorInvert::new())
         .view(220, 120)
         .apply_filter(
             Cow::new()
