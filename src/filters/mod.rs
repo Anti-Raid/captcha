@@ -24,7 +24,7 @@ pub use filters::wave::Wave;
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 
 #[typetag::serde(tag = "filter")]
-pub trait Filter {
+pub trait Filter: Send + Sync {
     fn apply(&self, i: &mut Image) -> Result<(), Error>;
 
     /// Validates that a filter is safe to call
