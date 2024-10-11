@@ -139,9 +139,26 @@ impl Image {
         let h = self.img.height() as usize;
         let i = self.img.clone().into_raw();
 
-        match lodepng::encode_memory(&i, w, h, lodepng::ColorType::RGBA, 8) {
+        let mut buf = std::io::BufWriter::new(std::io::Cursor::new(Vec::new()));
+
+        match image::write_buffer_with_format(
+            &mut buf,
+            &i,
+            w as u32,
+            h as u32,
+            image::ColorType::Rgba8,
+            image::ImageFormat::Png,
+        ) {
+            Err(_) => None,
+            Ok(_) => {
+                let img = buf.into_inner().unwrap().into_inner();
+                Some(img)
+            }
+        }
+
+        /*match lodepng::encode_memory(&i, w, h, lodepng::ColorType::RGBA, 8) {
             Err(_) => None,
             Ok(v) => Some(v),
-        }
+        }*/
     }
 }
