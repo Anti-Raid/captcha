@@ -11,7 +11,9 @@ fn main() {
     c.set_chars(&['a', 'b'])
         .add_random_chars(5)
         .apply_filter(Noise::new(0.2))
+        .expect("Noise filter failed")
         .apply_filter(Wave::new(2.0, 20.0))
+        .expect("Wave filter failed")
         .view(220, 120)
         .apply_filter(
             Cow::new()
@@ -20,6 +22,7 @@ fn main() {
                 .circles(1)
                 .area(Geometry::new(40, 150, 50, 70)),
         )
+        .expect("Cow filter failed")
         .set_color([255, 128, 0]);
     c.save(Path::new("captcha.png")).expect("save failed");
 

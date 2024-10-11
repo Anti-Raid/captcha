@@ -13,7 +13,7 @@ impl ColorInvert {
 
 #[typetag::serde]
 impl Filter for ColorInvert {
-    fn apply(&self, i: &mut Image) {
+    fn apply(&self, i: &mut Image) -> Result<(), super::Error> {
         for y in 0..i.height() {
             for x in 0..i.width() {
                 let mut p = i.get_pixel(x, y);
@@ -21,5 +21,11 @@ impl Filter for ColorInvert {
                 i.put_pixel(x, y, p);
             }
         }
+
+        Ok(())
+    }
+
+    fn validate(&self, _viewbox: (u32, u32)) -> Result<(), super::Error> {
+        Ok(())
     }
 }

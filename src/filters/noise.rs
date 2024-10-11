@@ -17,7 +17,7 @@ impl Noise {
 
 #[typetag::serde]
 impl Filter for Noise {
-    fn apply(&self, i: &mut Image) {
+    fn apply(&self, i: &mut Image) -> Result<(), super::Error> {
         let mut rng = thread_rng();
         for y in 0..i.height() {
             for x in 0..i.width() {
@@ -26,5 +26,15 @@ impl Filter for Noise {
                 }
             }
         }
+
+        Ok(())
+    }
+
+    fn validate(&self, _viewbox: (u32, u32)) -> Result<(), super::Error> {
+        if self.prob < 0.0 || self.prob > 1.0 {
+            return Err("prob must be between 0.0 and 1.0".into());
+        }
+
+        Ok(())
     }
 }

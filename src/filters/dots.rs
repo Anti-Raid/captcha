@@ -37,7 +37,7 @@ impl Dots {
 
 #[typetag::serde]
 impl Filter for Dots {
-    fn apply(&self, i: &mut Image) {
+    fn apply(&self, i: &mut Image) -> Result<(), super::Error> {
         let mut rng = thread_rng();
         for _ in 0..self.n {
             let x = rng.gen_range(0..i.width());
@@ -45,5 +45,25 @@ impl Filter for Dots {
             let r = rng.gen_range(self.min_radius..self.max_radius + 1);
             i.fill_circle(x, y, r, Pixl::black());
         }
+
+        Ok(())
+    }
+
+    fn validate(&self, viewbox: (u32, u32)) -> Result<(), super::Error> {
+        if self.min_radius <= 0
+            || self.max_radius <= 0
+            || self.min_radius >= viewbox.0
+            || self.min_radius >= viewbox.1
+            || self.max_radius >= viewbox.0
+            || self.max_radius >= viewbox.1
+        {
+            return Err("min_radius and max_radius must be greater than 0 and must be smaller than the viewbox".into());
+        }
+
+        if self.n <= 0 || self.n >= 5 {
+            return Err("n must be greater than 0 and less than 5".into());
+        }
+
+        Ok(())
     }
 }

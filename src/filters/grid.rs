@@ -16,7 +16,7 @@ impl Grid {
 
 #[typetag::serde]
 impl Filter for Grid {
-    fn apply(&self, i: &mut Image) {
+    fn apply(&self, i: &mut Image) -> Result<(), super::Error> {
         for y in (0..i.height()).filter(|i| i % self.y_gap == 0) {
             for x in 0..i.width() {
                 i.put_pixel(x, y, Pixl::black());
@@ -27,5 +27,24 @@ impl Filter for Grid {
                 i.put_pixel(x, y, Pixl::black());
             }
         }
+
+        Ok(())
+    }
+
+    fn validate(&self, viewbox: (u32, u32)) -> Result<(), super::Error> {
+        if self.x_gap <= 0
+            || self.y_gap <= 0
+            || self.x_gap >= viewbox.0
+            || self.x_gap >= viewbox.1
+            || self.y_gap >= viewbox.0
+            || self.y_gap >= viewbox.1
+        {
+            return Err(
+                "x_gap and y_gap must be greater than 0 and must be smaller than the viewbox"
+                    .into(),
+            );
+        }
+
+        Ok(())
     }
 }

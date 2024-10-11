@@ -24,12 +24,16 @@ pub struct Default {
 }
 
 impl Default {
+    /// Create a new default font
     pub fn new() -> Default {
-        let json = include_str!("font_default.json").to_string();
+        Self::from_json(include_str!("font_default.json")).expect("Failed to load default font")
+    }
 
-        Default {
-            data: serde_json::from_str(&json).expect("invalid json"),
-        }
+    /// Create a new font from a json string
+    pub fn from_json(json: &str) -> Result<Default, serde_json::Error> {
+        Ok(Default {
+            data: serde_json::from_str(json)?,
+        })
     }
 }
 

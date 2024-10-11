@@ -31,7 +31,7 @@ impl Line {
 
 #[typetag::serde]
 impl Filter for Line {
-    fn apply(&self, i: &mut Image) {
+    fn apply(&self, i: &mut Image) -> Result<(), super::Error> {
         let pixl = self.color.to_pixl();
 
         // Translate pt to center of image
@@ -55,5 +55,29 @@ impl Filter for Line {
                 }
             }
         }
+
+        Ok(())
+    }
+
+    fn validate(&self, viewbox: (u32, u32)) -> Result<(), super::Error> {
+        if self.thickness < 1.0 {
+            return Err("thickness must be greater than 1".into());
+        }
+
+        // Due to centering, we need to check if the points are within the viewbox
+        // using the center as the origin
+        if self.p1.0 < -(viewbox.0 as f32) / 2.0
+            || self.p1.0 > viewbox.0 as f32 / 2.0
+            || self.p1.1 < -(viewbox.1 as f32) / 2.0
+            || self.p1.1 > viewbox.1 as f32 / 2.0
+            || self.p2.0 < -(viewbox.0 as f32) / 2.0
+            || self.p2.0 > viewbox.0 as f32 / 2.0
+            || self.p2.1 < -(viewbox.1 as f32) / 2.0
+            || self.p2.1 > viewbox.1 as f32 / 2.0
+        {
+            return Err("points must be within the viewbox".into());
+        }
+
+        Ok(())
     }
 }

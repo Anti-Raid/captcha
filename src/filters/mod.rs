@@ -19,9 +19,14 @@ pub use filters::line::Line;
 pub use filters::noise::Noise;
 pub use filters::wave::Wave;
 
+pub type Error = Box<dyn std::error::Error + Send + Sync>;
+
 #[typetag::serde(tag = "filter")]
 pub trait Filter {
-    fn apply(&self, i: &mut Image);
+    fn apply(&self, i: &mut Image) -> Result<(), Error>;
+
+    /// Validates that a filter is safe to call
+    fn validate(&self, viewbox: (u32, u32)) -> Result<(), Error>;
 }
 
 #[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]

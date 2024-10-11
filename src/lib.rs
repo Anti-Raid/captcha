@@ -140,9 +140,12 @@ impl<T: rand::Rng + rand::RngCore> RngCaptcha<T> {
     /// Applies the filter `f` to the CAPTCHA.
     ///
     /// This method is used to add noise, grids, etc or to transform the shape of the CAPTCHA.
-    pub fn apply_filter<F: Filter>(&mut self, f: F) -> &mut Self {
-        f.apply(&mut self.img);
-        self
+    pub fn apply_filter<F: Filter>(
+        &mut self,
+        f: F,
+    ) -> std::result::Result<&mut Self, filters::Error> {
+        f.apply(&mut self.img)?;
+        Ok(self)
         // TODO support other fonts
     }
 
@@ -157,7 +160,6 @@ impl<T: rand::Rng + rand::RngCore> RngCaptcha<T> {
         self.font = Box::new(f);
         self.use_font_chars = self.font.chars();
         self
-        // TODO support other fonts
     }
 
     pub fn set_color(&mut self, color: [u8; 3]) -> &mut Self {
@@ -347,7 +349,9 @@ mod tests {
             .add_random_char()
             .add_random_char()
             .apply_filter(Noise::new(0.1))
+            .expect("noise failed")
             .apply_filter(Grid::new(20, 10))
+            .expect("grid failed")
             .add_text_area();
 
         let a = c.text_area();

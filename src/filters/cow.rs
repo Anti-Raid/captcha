@@ -77,7 +77,7 @@ impl Cow {
 
 #[typetag::serde]
 impl Filter for Cow {
-    fn apply(&self, i: &mut Image) {
+    fn apply(&self, i: &mut Image) -> Result<(), super::Error> {
         let mut rng = thread_rng();
 
         let g = match self.geometry {
@@ -93,7 +93,7 @@ impl Filter for Cow {
 
         for _ in 0..self.n {
             let mut rng = thread_rng();
-            let p = *pixels.choose(&mut rng).expect("failed");
+            let p = *pixels.choose(&mut rng).ok_or("no pixels")?;
 
             let r = rng.gen_range(self.min_radius..self.max_radius + 1) as i32;
             let v = Self::get_pixels(p.0 as i32, p.1 as i32, r, i);
@@ -110,5 +110,55 @@ impl Filter for Cow {
         }
 
         Self::invert_pixels(&pixels, i);
+
+        Ok(())
+    }
+
+    fn validate(&self, viewbox: (u32, u32)) -> Result<(), super::Error> {
+        if self.min_radius <= 0
+            || self.max_radius <= 0
+            || self.min_radius >= viewbox.0
+            || self.min_radius >= viewbox.1
+            || self.max_radius >= viewbox.0
+            || self.max_radius >= viewbox.1
+        {
+            return Err("min_radius and max_radius must be greater than 0 and must be smaller than the viewbox".into());
+        }
+
+        if self.min_radius > self.max_radius {
+            return Err("min_radius must be less than or equal to max_radius".into());
+        }
+
+        if let Some(ref geometry) = self.geometry {
+            if geometry.top <= 0
+                || geometry.left <= 0
+                || geometry.right <= 0
+                || geometry.bottom <= 0
+            {
+                return Err("geometry top/left/right/bottom must be greater than 0".into());
+            }
+
+            if geometry.left >= geometry.right {
+                return Err("geometry left must be less than geometry right".into());
+            }
+
+            if geometry.top >= geometry.bottom {
+                return Err("geometry top must be less than geometry bottom".into());
+            }
+
+            if geometry.right >= viewbox.0 {
+                return Err("right must be less than viewbox width".into());
+            }
+
+            if geometry.bottom >= viewbox.1 {
+                return Err("bottom must be less than viewbox height".into());
+            }
+        }
+
+        if self.n <= 0 || self.n >= 5 {
+            return Err("n must be greater than 0 and less than 5".into());
+        }
+
+        Ok(())
     }
 }

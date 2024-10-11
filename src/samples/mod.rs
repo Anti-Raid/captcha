@@ -130,20 +130,29 @@ fn captcha_amelia(d: Difficulty) -> Captcha {
     match d {
         Difficulty::Easy => c
             .apply_filter(Noise::new(0.2))
-            .apply_filter(Grid::new(8, 8)),
+            .expect("Noise filter failed")
+            .apply_filter(Grid::new(8, 8))
+            .expect("Grid filter failed"),
         Difficulty::Medium => c
             .apply_filter(Noise::new(0.3))
-            .apply_filter(Grid::new(6, 6)),
+            .expect("Noise filter failed")
+            .apply_filter(Grid::new(6, 6))
+            .expect("Grid filter failed"),
         Difficulty::Hard => c
             .apply_filter(Noise::new(0.5))
-            .apply_filter(Grid::new(4, 4)),
+            .expect("Noise filter failed")
+            .apply_filter(Grid::new(4, 4))
+            .expect("Grid filter failed"),
     };
-    c.apply_filter(Wave::new(2.0, 10.0)).view(WIDTH, HEIGHT);
+    c.apply_filter(Wave::new(2.0, 10.0))
+        .expect("Wave filter failed")
+        .view(WIDTH, HEIGHT);
     match d {
         Difficulty::Easy => c.apply_filter(Dots::new(10).max_radius(7).min_radius(3)),
         Difficulty::Medium => c.apply_filter(Dots::new(15).max_radius(7).min_radius(4)),
         Difficulty::Hard => c.apply_filter(Dots::new(20).max_radius(7).min_radius(5)),
-    };
+    }
+    .expect("Dots filter failed");
     c
 }
 
@@ -157,7 +166,9 @@ fn captcha_lucy(d: Difficulty) -> Captcha {
     let mut c = Captcha::new();
     c.add_random_chars(rnd())
         .apply_filter(Noise::new(n))
+        .expect("Noise filter failed")
         .apply_filter(Grid::new(g, g))
+        .expect("Grid filter failed")
         .view(WIDTH, HEIGHT);
     c
 }
@@ -166,11 +177,18 @@ fn captcha_mila(d: Difficulty) -> Captcha {
     let mut c = Captcha::new();
     c.add_random_chars(rnd());
     match d {
-        Difficulty::Easy => c.apply_filter(Noise::new(0.2)),
-        Difficulty::Medium => c.apply_filter(Noise::new(0.3)),
-        Difficulty::Hard => c.apply_filter(Noise::new(0.5)),
+        Difficulty::Easy => c
+            .apply_filter(Noise::new(0.2))
+            .expect("Noise filter failed"),
+        Difficulty::Medium => c
+            .apply_filter(Noise::new(0.3))
+            .expect("Noise filter failed"),
+        Difficulty::Hard => c
+            .apply_filter(Noise::new(0.5))
+            .expect("Noise filter failed"),
     };
     c.apply_filter(Wave::new(2.0, 20.0))
+        .expect("Wave filter failed")
         .view(WIDTH, HEIGHT)
         .apply_filter(
             Cow::new()
@@ -178,7 +196,8 @@ fn captcha_mila(d: Difficulty) -> Captcha {
                 .max_radius(50)
                 .circles(1)
                 .area(Geometry::new(40, 150, 50, 70)),
-        );
+        )
+        .expect("Cow filter failed");
     c
 }
 

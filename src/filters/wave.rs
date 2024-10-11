@@ -50,7 +50,7 @@ impl Wave {
 #[typetag::serde]
 
 impl Filter for Wave {
-    fn apply(&self, i: &mut Image) {
+    fn apply(&self, i: &mut Image) -> Result<(), super::Error> {
         let o = i.clone();
         i.clear();
         match self.d {
@@ -80,5 +80,19 @@ impl Filter for Wave {
                 }
             }
         }
+
+        Ok(())
+    }
+
+    fn validate(&self, _viewbox: (u32, u32)) -> Result<(), super::Error> {
+        if self.f < 0.0 || self.amp < 0.0 {
+            return Err("f and amp must be greater than 0".into());
+        }
+
+        if self.f >= 65535.0 || self.amp >= 65535.0 {
+            return Err("f and amp must be less than 65535.0 (u16::MAX)".into());
+        }
+
+        Ok(())
     }
 }
