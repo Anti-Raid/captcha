@@ -19,7 +19,7 @@ pub use filters::line::Line;
 pub use filters::noise::Noise;
 pub use filters::wave::Wave;
 
-#[typetag::serde]
+#[typetag::serde(tag = "filter")]
 pub trait Filter {
     fn apply(&self, i: &mut Image);
 }
