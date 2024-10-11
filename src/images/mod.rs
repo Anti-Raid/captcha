@@ -3,7 +3,6 @@ use std::cmp::{max, min};
 use std::path::Path;
 
 use image::{load_from_memory, ImageBuffer, Rgba, RgbaImage};
-use lodepng;
 
 #[derive(Clone, Copy)]
 pub struct Pixl {
@@ -155,10 +154,5 @@ impl Image {
                 Some(img)
             }
         }
-
-        /*match lodepng::encode_memory(&i, w, h, lodepng::ColorType::RGBA, 8) {
-            Err(_) => None,
-            Ok(v) => Some(v),
-        }*/
     }
 }

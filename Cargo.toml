@@ -17,7 +17,6 @@ imageproc = { version = "0.25" }
 rand = "0.8.5"
 serde_json = "1.0"
 base64 = "0.13"
-lodepng = "3.6.1"
 typetag = { version = "0.2", optional = true }
 serde = { version = "1.0", optional = true, features = ["derive"] }
 

@@ -49,7 +49,6 @@
 
 extern crate base64;
 extern crate image;
-extern crate lodepng;
 extern crate rand;
 #[cfg(feature = "serde")]
 extern crate serde;
