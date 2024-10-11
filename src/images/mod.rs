@@ -140,7 +140,7 @@ impl Image {
         let i = self.img.clone().into_raw();
 
         match lodepng::encode_memory(&i, w, h, lodepng::ColorType::RGBA, 8) {
-            Err(e) => None,
+            Err(_) => None,
             Ok(v) => Some(v),
         }
     }
