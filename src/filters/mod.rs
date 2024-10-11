@@ -29,6 +29,17 @@ pub trait Filter {
     fn validate(&self, viewbox: (u32, u32)) -> Result<(), Error>;
 }
 
+#[typetag::serde]
+impl Filter for Box<dyn Filter> {
+    fn apply(&self, i: &mut Image) -> Result<(), Error> {
+        self.as_ref().apply(i)
+    }
+
+    fn validate(&self, viewbox: (u32, u32)) -> Result<(), Error> {
+        self.as_ref().validate(viewbox)
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct SerdeColor {
     pub r: u8,
