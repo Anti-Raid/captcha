@@ -4,10 +4,36 @@ use filters::Filter;
 use images::Image;
 
 #[derive(Clone, Debug, PartialEq)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum Direction {
     HORIZONTAL,
     VERTICAL,
+}
+
+#[cfg(feature = "serde")]
+impl serde::Serialize for Direction {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        match self {
+            Direction::HORIZONTAL => s.serialize_str("horizontal"),
+            Direction::VERTICAL => s.serialize_str("vertical"),
+        }
+    }
+}
+
+#[cfg(feature = "serde")]
+/// Serde deserialization for LockdownMode
+impl<'de> serde::Deserialize<'de> for Direction {
+    fn deserialize<D>(deserializer: D) -> Result<Direction, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+
+        match s.as_str() {
+            "horizontal" => Ok(Direction::HORIZONTAL),
+            "vertical" => Ok(Direction::VERTICAL),
+            _ => Err(serde::de::Error::custom("invalid direction")),
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
