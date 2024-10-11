@@ -64,18 +64,16 @@ impl Filter for Line {
             return Err("thickness must be greater than 1".into());
         }
 
-        // Due to centering, we need to check if the points are within the viewbox
-        // using the center as the origin
-        if self.p1.0 < -(viewbox.0 as f32) / 2.0
-            || self.p1.0 > viewbox.0 as f32 / 2.0
-            || self.p1.1 < -(viewbox.1 as f32) / 2.0
-            || self.p1.1 > viewbox.1 as f32 / 2.0
-            || self.p2.0 < -(viewbox.0 as f32) / 2.0
-            || self.p2.0 > viewbox.0 as f32 / 2.0
-            || self.p2.1 < -(viewbox.1 as f32) / 2.0
-            || self.p2.1 > viewbox.1 as f32 / 2.0
+        if self.p1 == self.p2 {
+            return Err("p1 and p2 must be different".into());
+        }
+
+        if self.p1.0.abs() >= viewbox.0 as f32
+            || self.p1.1.abs() >= viewbox.1 as f32
+            || self.p2.0.abs() >= viewbox.0 as f32
+            || self.p2.1.abs() >= viewbox.1 as f32
         {
-            return Err("points must be within the viewbox".into());
+            return Err("p1 and p2 must be within the viewbox".into());
         }
 
         Ok(())
