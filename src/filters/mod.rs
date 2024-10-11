@@ -6,6 +6,7 @@ mod dots;
 mod grid;
 mod line;
 mod noise;
+mod random_line;
 mod wave;
 
 use images::Image;
@@ -17,6 +18,7 @@ pub use filters::dots::Dots;
 pub use filters::grid::Grid;
 pub use filters::line::Line;
 pub use filters::noise::Noise;
+pub use filters::random_line::RandomLine;
 pub use filters::wave::Wave;
 
 pub type Error = Box<dyn std::error::Error + Send + Sync>;

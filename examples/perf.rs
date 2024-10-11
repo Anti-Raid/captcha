@@ -1,7 +1,9 @@
 extern crate captcha;
+extern crate rand;
 extern crate time;
 
 use captcha::{gen, Difficulty};
+use rand::Rng;
 use std::thread;
 use time::Instant;
 
@@ -15,6 +17,15 @@ fn main() {
     for _ in 0..nthreads {
         let h = thread::spawn(move || {
             for _ in 0..n {
+                /*gen(Difficulty::Easy)
+                .save(std::path::Path::new(
+                    format!(
+                        "captcha_random_easy_{}.png",
+                        rand::thread_rng().gen_range(0..1000)
+                    )
+                    .as_str(),
+                ))
+                .unwrap();*/
                 gen(Difficulty::Easy).as_tuple();
             }
             println!("done {:?} ms", b.elapsed().whole_milliseconds());

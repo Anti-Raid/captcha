@@ -23,7 +23,7 @@ fn main() {
                 .area(Geometry::new(40, 150, 50, 70)),
         )
         .expect("Cow filter failed")
-        .set_color([255, 128, 0]);
+        .set_color([255, 128, 0, 255]);
     c.save(Path::new("captcha.png")).expect("save failed");
 
     println!(

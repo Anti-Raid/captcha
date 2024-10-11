@@ -106,7 +106,7 @@ pub struct RngCaptcha<T> {
     text_area: Geometry,
     chars: Vec<char>,
     use_font_chars: Vec<char>,
-    color: Option<[u8; 3]>,
+    color: Option<[u8; 4]>,
     rng: T,
 }
 
@@ -170,7 +170,7 @@ impl<T: rand::Rng + rand::RngCore> RngCaptcha<T> {
         self
     }
 
-    pub fn set_color(&mut self, color: [u8; 3]) -> &mut Self {
+    pub fn set_color(&mut self, color: [u8; 4]) -> &mut Self {
         self.color = Some(color);
         self
     }

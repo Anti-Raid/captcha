@@ -2,22 +2,28 @@ use image::ImageResult as Result;
 use std::cmp::{max, min};
 use std::path::Path;
 
-use image::{load_from_memory, ImageBuffer, Rgb, RgbImage};
+use image::{load_from_memory, ImageBuffer, Rgba, RgbaImage};
 use lodepng;
 
 #[derive(Clone, Copy)]
 pub struct Pixl {
-    rgb: [u8; 3],
+    rgb: [u8; 4],
 }
 
 #[derive(Clone)]
 pub struct Image {
-    img: RgbImage,
+    img: RgbaImage,
 }
 
 impl Pixl {
     pub fn new(r: u8, g: u8, b: u8) -> Pixl {
-        Pixl { rgb: [r, g, b] }
+        Pixl {
+            rgb: [r, g, b, 255],
+        }
+    }
+
+    pub fn new_with_alpha(r: u8, g: u8, b: u8, a: u8) -> Pixl {
+        Pixl { rgb: [r, g, b, a] }
     }
 
     pub fn black() -> Pixl {
@@ -36,14 +42,14 @@ impl Pixl {
 }
 
 impl Image {
-    fn pixel_white() -> Rgb<u8> {
-        Rgb::<u8>([255, 255, 255])
+    fn pixel_white() -> Rgba<u8> {
+        Rgba::<u8>([255, 255, 255, 255])
     }
 
     pub fn from_png(v: Vec<u8>) -> Option<Image> {
         match load_from_memory(&v) {
             Err(_) => None,
-            Ok(i) => Some(Image { img: i.to_rgb8() }),
+            Ok(i) => Some(Image { img: i.to_rgba8() }),
         }
     }
 
@@ -53,14 +59,14 @@ impl Image {
         }
     }
 
-    pub fn set_color(&mut self, color: &[u8; 3]) {
+    pub fn set_color(&mut self, color: &[u8; 4]) {
         // TODO: optimize
         for y in 0..self.img.height() {
             for x in 0..self.img.width() {
                 let c = *self.img.get_pixel(x, y);
                 if c[0] == 0 {
                     // if red channel is 0 we assume it's a black pixel
-                    let rgb = Rgb::<u8>(*color);
+                    let rgb = Rgba::<u8>(*color);
                     self.img.put_pixel(x, y, rgb);
                 }
             }
@@ -69,14 +75,14 @@ impl Image {
 
     pub fn put_pixel(&mut self, x: u32, y: u32, p: Pixl) {
         if x < self.img.width() && y < self.img.height() {
-            self.img.put_pixel(x, y, Rgb::<u8>(p.rgb));
+            self.img.put_pixel(x, y, Rgba::<u8>(p.rgb));
         }
     }
 
     pub fn get_pixel(&self, x: u32, y: u32) -> Pixl {
         let p = *self.img.get_pixel(x, y);
         Pixl {
-            rgb: [p[0], p[1], p[2]],
+            rgb: [p[0], p[1], p[2], p[3]],
         }
     }
 
@@ -92,8 +98,12 @@ impl Image {
         self.img.save(p)
     }
 
-    pub fn draw_polygon(&mut self, poly: &[imageproc::point::Point<i32>], color: Pixl) {
-        imageproc::drawing::draw_polygon_mut(&mut self.img, poly, Rgb::<u8>(color.rgb));
+    pub fn draw_polygon(&mut self, poly: &[imageproc::point::Point<i32>], color: Rgba<u8>) {
+        imageproc::drawing::draw_polygon_mut(&mut self.img, poly, color);
+    }
+
+    pub fn draw_line_segment(&mut self, p1: (f32, f32), p2: (f32, f32), color: Rgba<u8>) {
+        imageproc::drawing::draw_line_segment_mut(&mut self.img, p1, p2, color);
     }
 
     pub fn fill_circle(&mut self, x: u32, y: u32, r: u32, p: Pixl) {

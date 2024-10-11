@@ -1,6 +1,6 @@
 extern crate captcha;
 
-use captcha::filters::{ColorInvert, Cow, Grid, Line, Noise, SerdeColor, Wave};
+use captcha::filters::{ColorInvert, Cow, Grid, Line, Noise, RandomLine, SerdeColor, Wave};
 use captcha::{Captcha, Geometry};
 
 use std::path::Path;
@@ -24,6 +24,8 @@ fn main() {
         .apply_filter(ColorInvert::new())
         .expect("ColorInvert filter failed")
         .view(280, 160)
+        .apply_filter(RandomLine::new())
+        .expect("RandomLine filter failed")
         .apply_filter(
             Cow::new()
                 .min_radius(40)
