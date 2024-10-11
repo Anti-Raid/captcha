@@ -146,7 +146,15 @@ impl<T: rand::Rng + rand::RngCore> RngCaptcha<T> {
     ) -> std::result::Result<&mut Self, filters::Error> {
         f.apply(&mut self.img)?;
         Ok(self)
-        // TODO support other fonts
+    }
+
+    /// Same as `apply_filter` but supports dynamic dispatch.
+    pub fn apply_filter_dyn(
+        &mut self,
+        f: &dyn Filter,
+    ) -> std::result::Result<&mut Self, filters::Error> {
+        f.apply(&mut self.img)?;
+        Ok(self)
     }
 
     /// Sets another font that is used for the characters.
